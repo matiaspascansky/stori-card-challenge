@@ -1,5 +1,5 @@
 # Use the official Golang image as the base image
-FROM golang:1.20
+FROM golang:1.12 AS builder
 
 # Set the working directory inside the container
 WORKDIR /go/src/stori-card-challenge
@@ -15,8 +15,16 @@ ENV GOOS=linux
 ENV GOARCH=amd64
 
 # Build the Go application for the Lambda execution environment
-RUN go build -o main .
+RUN go build -o main ./cmd
+
+# Use a smaller base image for the final image
+FROM alpine:latest
+
+# Copy the binary from the builder stage
+COPY --from=builder /go/src/stori-card-challenge/main /var/task/
+
+# For debug purposes
+RUN ls -la /var/task
 
 # Command to run the Lambda function
-CMD [ "./main" ]
-EXPOSE 8080
+CMD ["/var/task/main", "HandleAPIGatewayProxyRequest"]
