@@ -41,12 +41,12 @@ func HandleAPIGatewayProxyRequest(ctx context.Context, r events.APIGatewayProxyR
 			Body:       "broken!",
 		}, nil
 	}
-	getCsvUsecase := usecases.NewGetCsvUsecase(session)
+	getCsvUsecase := usecases.NewGetTransactionUsecase(session)
 
-	err = getCsvUsecase.ProcessCsvFromS3(config.S3Bucket, config.ObjectKey)
+	err = getCsvUsecase.ProcessTransactions(config.S3Bucket, config.ObjectKey)
 
 	if err != nil {
-		fmt.Println("handler: Error handling csv usecase", err)
+		fmt.Println("handler: Error in csv usecase", err)
 		return events.APIGatewayProxyResponse{
 			StatusCode: 500,
 			Body:       "broken!",

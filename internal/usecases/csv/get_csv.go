@@ -1,43 +1,40 @@
 package usecases
 
 import (
+	"errors"
 	"fmt"
-	"stori-card-challenge/internal/infrastructure"
+	"stori-card-challenge/internal/infrastructure/transaction"
 
 	"github.com/aws/aws-sdk-go/aws/session"
 )
 
-type CsvUsecase interface {
-	ProcessCsvFromS3(bucket, key string) error
+type TransactionUsecase interface {
+	ProcessTransactions(bucket, key string) error
 }
 
-type csvUsecase struct {
-	csvRepository infrastructure.CsvRepository
+type transactionUsecase struct {
+	transactionRepository transaction.TransactionRepository
 }
 
-func NewGetCsvUsecase(session *session.Session) CsvUsecase {
-	return &csvUsecase{
-		csvRepository: infrastructure.NewGetCsvRepository(session),
+func NewGetTransactionUsecase(session *session.Session) *transactionUsecase {
+	return &transactionUsecase{
+		transactionRepository: transaction.NewGetTransactionRepository(session),
 	}
 }
 
-func (u *csvUsecase) ProcessCsvFromS3(bucket, key string) error {
+func (u *transactionUsecase) ProcessTransactions(bucket, key string) error {
 	// Get CSV content from S3
-	content, err := u.csvRepository.GetCsvFromS3(bucket, key)
-	if err != nil {
-		return err
+	transactions, err := u.transactionRepository.GetTransactionsFromS3(bucket, key)
+	for _, transaction := range transactions {
+		fmt.Printf("ID: %d, Date: %s, Amount: %.2f\n", transaction.ID, transaction.Date, transaction.Amount)
 	}
-
-	// Process the CSV content
-	if err := processCSV(content); err != nil {
-		return err
+	if err != nil {
+		errors.New("usecase: error getting transactions from s3")
 	}
 
 	return nil
+
 }
 
-func processCSV(content []byte) error {
-	// Process the CSV content as needed
-	fmt.Printf("CSV Content: %s\n", content)
-	return nil
+type CsvResponse struct {
 }
