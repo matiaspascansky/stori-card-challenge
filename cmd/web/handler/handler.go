@@ -3,25 +3,21 @@ package handler
 import (
 	"context"
 	"fmt"
+	usecases "stori-card-challenge/internal/usecases/csv"
 	"stori-card-challenge/utils"
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/aws/aws-sdk-go/aws/session"
-	"github.com/aws/aws-sdk-go/service/s3"
 )
 
 const (
 	aws_config_path = "/var/task/aws_config.json"
 )
 
-type GetCsvHandler struct {
-	s3Usecase usecase.S3Usecase
-}
-
 // HandleAPIGatewayProxyRequest is the Lambda handler function.
-func (h *S3Handler) HandleAPIGatewayProxyRequest(ctx context.Context, r events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+func HandleAPIGatewayProxyRequest(ctx context.Context, r events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 
 	// Read AWS configuration from JSON file
 	config, err := utils.ReadAWSConfig(aws_config_path)
@@ -34,7 +30,7 @@ func (h *S3Handler) HandleAPIGatewayProxyRequest(ctx context.Context, r events.A
 	}
 
 	// Create an AWS session
-	sess, err := session.NewSession(&aws.Config{
+	session, err := session.NewSession(&aws.Config{
 		Region:      aws.String(config.AWSRegion),
 		Credentials: credentials.NewStaticCredentials(config.AWSAccessKey, config.AWSSecretKey, ""),
 	})
@@ -45,14 +41,20 @@ func (h *S3Handler) HandleAPIGatewayProxyRequest(ctx context.Context, r events.A
 			Body:       "broken!",
 		}, nil
 	}
+	getCsvUsecase := usecases.NewGetCsvUsecase(session)
 
-	// Create an S3 service client
-	svc := s3.New(sess)
+	err = getCsvUsecase.ProcessCsvFromS3(config.S3Bucket, config.ObjectKey)
 
-	fmt.Print("svc", svc)
+	if err != nil {
+		fmt.Println("handler: Error handling csv usecase", err)
+		return events.APIGatewayProxyResponse{
+			StatusCode: 500,
+			Body:       "broken!",
+		}, nil
+	}
 
 	return events.APIGatewayProxyResponse{
 		StatusCode: 200,
-		Body:       "Hello, Lambda!",
+		Body:       "Csv is processed completely!",
 	}, nil
 }

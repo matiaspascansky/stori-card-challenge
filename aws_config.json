@@ -3,6 +3,6 @@
     "aws_access_key": "AKIA3FLDXTPMHXY6YRWE",
     "aws_secret_key": "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",
     "s3_bucket": "transactions-bucket-stori-card-challenge",
-    "csv_file_path": "transactions.csv"
+    "object_key": "transactions.csv"
 
 }

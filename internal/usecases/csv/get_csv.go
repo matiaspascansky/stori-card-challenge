@@ -1,7 +1,8 @@
-package usecase
+package usecases
 
 import (
 	"fmt"
+	"stori-card-challenge/internal/infrastructure"
 
 	"github.com/aws/aws-sdk-go/aws/session"
 )
@@ -11,12 +12,12 @@ type CsvUsecase interface {
 }
 
 type csvUsecase struct {
-	csvRepository CsvRepository
+	csvRepository infrastructure.CsvRepository
 }
 
-func NewCsvUsecase(session *session.Session) CsvUsecase {
+func NewGetCsvUsecase(session *session.Session) CsvUsecase {
 	return &csvUsecase{
-		csvRepository: NewGetCsvRepository(session),
+		csvRepository: infrastructure.NewGetCsvRepository(session),
 	}
 }
 

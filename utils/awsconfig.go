@@ -10,7 +10,7 @@ type AWSConfig struct {
 	AWSAccessKey string `json:"aws_access_key"`
 	AWSSecretKey string `json:"aws_secret_key"`
 	S3Bucket     string `json:"s3_bucket"`
-	FilePath     string `json:"file_path"`
+	ObjectKey    string `json:"object_key"`
 }
 
 func ReadAWSConfig(filePath string) (AWSConfig, error) {

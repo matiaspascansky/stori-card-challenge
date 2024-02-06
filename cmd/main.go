@@ -1,7 +1,7 @@
 package main
 
 import (
-	"stori-card-challenge/internal/handler"
+	"stori-card-challenge/cmd/web/handler"
 
 	"github.com/aws/aws-lambda-go/lambda"
 )

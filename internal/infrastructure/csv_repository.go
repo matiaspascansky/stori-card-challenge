@@ -1,4 +1,4 @@
-package usecase
+package infrastructure
 
 import (
 	"context"
@@ -15,7 +15,7 @@ import (
 )
 
 type CsvRepository interface {
-	GetS3OBject(bucket string, key string) ([]byte, error)
+	GetCsvFromS3(bucket string, key string) ([]byte, error)
 }
 
 type csvRepository struct {
