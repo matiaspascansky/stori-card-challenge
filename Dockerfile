@@ -22,9 +22,7 @@ FROM alpine:latest
 
 # Copy the binary from the builder stage
 COPY --from=builder /go/src/stori-card-challenge/main /var/task/
-
-# For debug purposes
-RUN ls -la /var/task
+COPY --from=builder /go/src/stori-card-challenge/aws_config.json /var/task/
 
 # Command to run the Lambda function
 CMD ["/var/task/main", "HandleAPIGatewayProxyRequest"]
