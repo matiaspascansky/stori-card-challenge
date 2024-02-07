@@ -45,7 +45,7 @@ const (
 		<p>Total Balance: ${{printf "%.2f" .TotalBalance}}</p>
 		<p>Average Debit Amount: ${{printf "%.2f" .AvgDebitAmount}}</p>
 		<p>Average Credit Amount: ${{printf "%.2f" .AvgCreditAmount}}</p>
-		<h2>Transactions Grouped By Year and Month:</h2>
+		<h2>Transactions History:</h2>
 		<table>
 			<tr>
 				<th>Year</th>
