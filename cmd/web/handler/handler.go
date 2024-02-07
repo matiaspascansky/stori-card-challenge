@@ -45,7 +45,6 @@ func HandleAPIGatewayProxyRequest(ctx context.Context, r events.APIGatewayProxyR
 	getTransactionsUsecase := usecases.NewGetTransactionUsecase(session)
 
 	transactions, err := getTransactionsUsecase.GetTransactions(config.S3Bucket, config.ObjectKey)
-	fmt.Println("handler: OK TRANSACTIONS", err)
 
 	processAndSendEmailUsecase := usecases.NewProcessTransactionsAndSendEmailUsecase(session)
 
@@ -59,8 +58,6 @@ func HandleAPIGatewayProxyRequest(ctx context.Context, r events.APIGatewayProxyR
 		}, nil
 	}
 
-	fmt.Print(transactions)
-
 	if err != nil {
 		fmt.Println("handler: Error in csv usecase", err)
 		return events.APIGatewayProxyResponse{
@@ -71,6 +68,6 @@ func HandleAPIGatewayProxyRequest(ctx context.Context, r events.APIGatewayProxyR
 
 	return events.APIGatewayProxyResponse{
 		StatusCode: 200,
-		Body:       "Csv is processed completely!",
+		Body:       "Email has been sent to user!",
 	}, nil
 }

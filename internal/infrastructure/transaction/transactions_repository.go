@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/csv"
 	"errors"
-	"fmt"
 	"io/ioutil"
 	"stori-card-challenge/domain/transaction"
 	"strconv"
@@ -56,8 +55,6 @@ func (u *transactionRepository) GetTransactionsFromS3(bucket, key string) ([]tra
 	if err != nil {
 		return nil, errors.New("repository: error processing csv")
 	}
-
-	fmt.Printf("CSV Records: %+v\n", records)
 
 	return transactions, nil
 }

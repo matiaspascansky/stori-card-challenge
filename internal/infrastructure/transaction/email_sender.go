@@ -10,10 +10,26 @@ import (
 
 const (
 	recipient = "matias.pascansky@gmail.com"
-	body      = "mensajito body"
-	subject   = "Stori Card Transactions Status"
-	sender    = "matias.pascansky@gmail.com"
+	body      = `
+	<!DOCTYPE html>
+	<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>Email Template</title>
+	</head>
+	<body>
+		<h1>Hello, {{.Name}}!</h1>
+		<p>{{.Message}}</p>
+	</body>
+	</html>
+	`
+	subject = "Stori Card Transactions Status"
+	sender  = "matias.pascansky@gmail.com"
 )
+
+type EmailData struct {
+	//todo lo que vamos a reemplazar en el mail
+}
 
 type EmailSender interface {
 	SendEmail(content string) error
