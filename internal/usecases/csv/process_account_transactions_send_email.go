@@ -2,7 +2,6 @@ package usecases
 
 import (
 	"errors"
-	"fmt"
 	"stori-card-challenge/domain/transaction"
 	transactionInfra "stori-card-challenge/internal/infrastructure/transaction"
 	"strings"
@@ -26,13 +25,13 @@ func NewProcessTransactionsAndSendEmailUsecase(session *session.Session) *proces
 
 func (u *processTransactionsAndSendEmailUsecase) ProcessTransactionsAndSendEmail(transactions []transaction.Transaction) error {
 
-	status, err := processDataAndGenerateEmailContent(transactions)
+	status, err := processDataAndCalculateStatus(transactions)
 
 	if err != nil {
 		return errors.New("error processing data for email content creation")
 	}
 
-	fmt.Println("Total Balance:", status.TotalBalance)
+	/*fmt.Println("Total Balance:", status.TotalBalance)
 	fmt.Println("Average Debit Amount:", status.AvgDebitAmount)
 	fmt.Println("Average Credit Amount:", status.AvgCreditAmount)
 
@@ -41,14 +40,15 @@ func (u *processTransactionsAndSendEmailUsecase) ProcessTransactionsAndSendEmail
 			fmt.Printf("Year: %s, Month: %s, Transaction Count: %d\n", year, month, transactions)
 		}
 	}
+	*/
 
-	u.emailSender.SendEmail("asdasd")
+	u.emailSender.SendEmail(status)
 
 	return nil
 
 }
 
-func processDataAndGenerateEmailContent(transactions []transaction.Transaction) (*transactionInfra.TransactionsStatus, error) {
+func processDataAndCalculateStatus(transactions []transaction.Transaction) (*transactionInfra.TransactionsStatus, error) {
 	var totalBalance float64
 	totalDebitTransactions := 0
 	totalCreditTransaction := 0
