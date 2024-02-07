@@ -11,7 +11,7 @@ import (
 const (
 	recipient = "matias.pascansky@gmail.com"
 	body      = "mensajito body"
-	subject   = "sujeto del mensaje"
+	subject   = "Stori Card Transactions Status"
 	sender    = "matias.pascansky@gmail.com"
 )
 
@@ -58,4 +58,5 @@ func (e *emailSender) SendEmail(content string) error {
 	}
 
 	fmt.Println("Email sent successfully:", result)
+	return nil
 }

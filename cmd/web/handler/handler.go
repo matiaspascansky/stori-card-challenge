@@ -3,6 +3,7 @@ package handler
 import (
 	"context"
 	"fmt"
+	"os"
 	usecases "stori-card-challenge/internal/usecases/csv"
 	"stori-card-challenge/utils"
 
@@ -32,7 +33,7 @@ func HandleAPIGatewayProxyRequest(ctx context.Context, r events.APIGatewayProxyR
 	// Create an AWS session
 	session, err := session.NewSession(&aws.Config{
 		Region:      aws.String(config.AWSRegion),
-		Credentials: credentials.NewStaticCredentials(config.AWSAccessKey, config.AWSSecretKey, ""),
+		Credentials: credentials.NewStaticCredentials(os.Getenv("aws_access_key"), os.Getenv("aws_secret_key"), ""),
 	})
 	if err != nil {
 		fmt.Println("Error creating session:", err)

@@ -6,11 +6,9 @@ import (
 )
 
 type AWSConfig struct {
-	AWSRegion    string `json:"aws_region"`
-	AWSAccessKey string `json:"aws_access_key"`
-	AWSSecretKey string `json:"aws_secret_key"`
-	S3Bucket     string `json:"s3_bucket"`
-	ObjectKey    string `json:"object_key"`
+	AWSRegion string `json:"aws_region"`
+	S3Bucket  string `json:"s3_bucket"`
+	ObjectKey string `json:"object_key"`
 }
 
 func ReadAWSConfig(filePath string) (AWSConfig, error) {
