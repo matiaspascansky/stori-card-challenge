@@ -56,6 +56,10 @@ func processDataAndGenerateEmailContent(transactions []transaction.Transaction) 
 	var sumCreditTransaction float64
 	transactionCount := make(map[string]map[string]int)
 
+	if len(transactions) == 0 {
+		return nil, errors.New("process data: no transactions found")
+	}
+
 	for _, t := range transactions {
 		totalBalance += t.Amount
 
