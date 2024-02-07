@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 	"os"
-	usecases "stori-card-challenge/internal/usecases/csv"
+	usecases "stori-card-challenge/internal/usecases/transaction"
 	"stori-card-challenge/utils"
 
 	"github.com/aws/aws-lambda-go/events"
