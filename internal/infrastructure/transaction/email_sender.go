@@ -33,7 +33,6 @@ const (
 			.stori-card-logo {
 				width: 400px;
 				height: auto;
-				margin-bottom: 20px;
 			}
 		</style>
 	</head>
