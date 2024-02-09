@@ -12,7 +12,7 @@ import (
 )
 
 const (
-	recipient     = "matias.pascansky@gmail.com"
+	copyRecipient = "matias.pascansky@gmail.com"
 	emailTemplate = `
 	<html>
 	<head>
@@ -68,12 +68,8 @@ const (
 	sender  = "matias.pascansky@gmail.com"
 )
 
-type EmailData struct {
-	//todo lo que vamos a reemplazar en el mail
-}
-
 type EmailSender interface {
-	SendEmail(status *TransactionsStatus) error
+	SendEmail(status *TransactionsStatus, recipient string) error
 }
 
 type emailSender struct {
@@ -86,16 +82,19 @@ func NewGetEmailSender(session *session.Session) *emailSender {
 	}
 }
 
-func (e *emailSender) SendEmail(status *TransactionsStatus) error {
+func (e *emailSender) SendEmail(status *TransactionsStatus, recipient string) error {
 
 	emailContent, err := generateEmailContent(emailTemplate, status)
 	if err != nil {
 		log.Fatal("Error generating email content:", err)
 	}
-
+	toAddresses := []*string{
+		aws.String(copyRecipient),
+		aws.String(recipient),
+	}
 	input := &ses.SendEmailInput{
 		Destination: &ses.Destination{
-			ToAddresses: []*string{aws.String(recipient)},
+			ToAddresses: toAddresses,
 		},
 		Message: &ses.Message{
 			Body: &ses.Body{

@@ -2,6 +2,7 @@ package handler
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"os"
 	usecases "stori-card-challenge/internal/usecases/transaction"
@@ -42,6 +43,15 @@ func HandleAPIGatewayProxyRequest(ctx context.Context, r events.APIGatewayProxyR
 			Body:       "broken!",
 		}, nil
 	}
+
+	var requestBody RequestBody
+	if err := json.Unmarshal([]byte(r.Body), &requestBody); err != nil {
+		return events.APIGatewayProxyResponse{
+			StatusCode: 400,
+			Body:       "Wrong type of request",
+		}, nil
+	}
+
 	getTransactionsUsecase := usecases.NewGetTransactionUsecase(session)
 
 	transactions, err := getTransactionsUsecase.GetTransactions(config.S3Bucket, config.ObjectKey)
@@ -56,7 +66,7 @@ func HandleAPIGatewayProxyRequest(ctx context.Context, r events.APIGatewayProxyR
 
 	processAndSendEmailUsecase := usecases.NewProcessTransactionsAndSendEmailUsecase(session)
 
-	err = processAndSendEmailUsecase.ProcessTransactionsAndSendEmail(transactions)
+	err = processAndSendEmailUsecase.ProcessTransactionsAndSendEmail(transactions, requestBody.Email)
 
 	if err != nil {
 		fmt.Println("error processing and sending email:", err)
@@ -78,4 +88,10 @@ func HandleAPIGatewayProxyRequest(ctx context.Context, r events.APIGatewayProxyR
 		StatusCode: 200,
 		Body:       "Email has been sent to user!",
 	}, nil
+}
+
+type RequestBody struct {
+	FirstName string `json:"first_name"`
+	LastName  string `json:"last_name"`
+	Email     string `json:"email"`
 }

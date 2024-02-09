@@ -10,7 +10,7 @@ import (
 )
 
 type ProcessTransactionsAndSendEmailUsecase interface {
-	ProcessTransactionsAndSendEmail(transactions []transaction.Transaction) error
+	ProcessTransactionsAndSendEmail(transactions []transaction.Transaction, email string) error
 }
 
 type processTransactionsAndSendEmailUsecase struct {
@@ -23,7 +23,7 @@ func NewProcessTransactionsAndSendEmailUsecase(session *session.Session) *proces
 	}
 }
 
-func (u *processTransactionsAndSendEmailUsecase) ProcessTransactionsAndSendEmail(transactions []transaction.Transaction) error {
+func (u *processTransactionsAndSendEmailUsecase) ProcessTransactionsAndSendEmail(transactions []transaction.Transaction, email string) error {
 
 	status, err := processDataAndCalculateStatus(transactions)
 
@@ -31,7 +31,7 @@ func (u *processTransactionsAndSendEmailUsecase) ProcessTransactionsAndSendEmail
 		return errors.New("error processing data for email content creation")
 	}
 
-	u.emailSender.SendEmail(status)
+	u.emailSender.SendEmail(status, email)
 
 	return nil
 
