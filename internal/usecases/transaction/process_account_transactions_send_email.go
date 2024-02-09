@@ -23,17 +23,22 @@ func NewProcessTransactionsAndSendEmailUsecase(session *session.Session) *proces
 	}
 }
 
-func (u *processTransactionsAndSendEmailUsecase) ProcessTransactionsAndSendEmail(transactions []transaction.Transaction, email string) error {
+func (u *processTransactionsAndSendEmailUsecase) ProcessTransactionsAndSendEmail(transactions []transaction.Transaction, email string) (*transaction.TransactionInformation, error) {
 
-	status, err := processDataAndCalculateStatus(transactions)
+	tStatus, err := processDataAndCalculateStatus(transactions)
 
-	if err != nil {
-		return errors.New("error processing data for email content creation")
+	tInfo := &transaction.TransactionInformation{
+		TotalBalance: tStatus.TotalBalance,
+		Status:       tStatus.Status,
 	}
 
-	u.emailSender.SendEmail(status, email)
+	if err != nil {
+		return nil, errors.New("error processing data for email content creation")
+	}
 
-	return nil
+	u.emailSender.SendEmail(tStatus, email)
+
+	return tInfo, err
 
 }
 
@@ -77,11 +82,19 @@ func processDataAndCalculateStatus(transactions []transaction.Transaction) (*tra
 		YearMonths: transactionCount,
 	}
 
+	status := ""
+	if totalBalance < 0 {
+		status = "in debt"
+	} else {
+		status = "debt-free"
+	}
+
 	return &transactionInfra.TransactionsStatus{
 		TotalBalance:        float64(totalBalance),
 		AvgDebitAmount:      float64(sumDebitTransaction) / float64(totalDebitTransactions),
 		AvgCreditAmount:     float64(sumCreditTransaction) / float64(totalCreditTransaction),
 		TransactionsGrouped: tg,
+		Status:              status,
 	}, nil
 
 }

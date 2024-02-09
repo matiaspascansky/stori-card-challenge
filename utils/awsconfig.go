@@ -9,6 +9,7 @@ type AWSConfig struct {
 	AWSRegion string `json:"aws_region"`
 	S3Bucket  string `json:"s3_bucket"`
 	ObjectKey string `json:"object_key"`
+	TopicArn  string `json:"topic_arn"`
 }
 
 func ReadAWSConfig(filePath string) (AWSConfig, error) {

@@ -4,7 +4,10 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"log"
 	"os"
+	"stori-card-challenge/domain/transaction"
+	"stori-card-challenge/internal/infrastructure/topic"
 	usecases "stori-card-challenge/internal/usecases/transaction"
 	"stori-card-challenge/utils"
 
@@ -66,7 +69,7 @@ func HandleAPIGatewayProxyRequest(ctx context.Context, r events.APIGatewayProxyR
 
 	processAndSendEmailUsecase := usecases.NewProcessTransactionsAndSendEmailUsecase(session)
 
-	err = processAndSendEmailUsecase.ProcessTransactionsAndSendEmail(transactions, requestBody.Email)
+	transactionInfo, err := processAndSendEmailUsecase.ProcessTransactionsAndSendEmail(transactions, requestBody.Email)
 
 	if err != nil {
 		fmt.Println("error processing and sending email:", err)
@@ -84,6 +87,18 @@ func HandleAPIGatewayProxyRequest(ctx context.Context, r events.APIGatewayProxyR
 		}, nil
 	}
 
+	msgData := ToMsgData(requestBody, *transactionInfo)
+
+	snsSender := topic.NewSnsSender(session, config.TopicArn)
+
+	sendSnsMessageUsecase := usecases.NewSendMessageUsecase(snsSender)
+
+	err = sendSnsMessageUsecase.Execute(msgData)
+
+	if err != nil {
+		log.Print("Warning: could not send message", err)
+	}
+
 	return events.APIGatewayProxyResponse{
 		StatusCode: 200,
 		Body:       "Email has been sent to user!",
@@ -94,4 +109,14 @@ type RequestBody struct {
 	FirstName string `json:"first_name"`
 	LastName  string `json:"last_name"`
 	Email     string `json:"email"`
+}
+
+func ToMsgData(r RequestBody, tInfo transaction.TransactionInformation) usecases.MsgData {
+	return usecases.MsgData{
+		FirstName:    r.FirstName,
+		LastName:     r.LastName,
+		Email:        r.Email,
+		Status:       tInfo.Status,
+		TotalBalance: tInfo.TotalBalance,
+	}
 }

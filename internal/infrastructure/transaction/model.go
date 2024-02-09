@@ -21,6 +21,7 @@ type TransactionsStatus struct {
 	AvgDebitAmount      float64                           `json:"avg_debit_amount"`
 	AvgCreditAmount     float64                           `json:"avg_credit_amount"`
 	TransactionsGrouped TransactionsGroupedByYearAndMonth `json:"transactions_grouped"`
+	Status              string                            `json:"status"`
 }
 
 type TransactionsGroupedByYearAndMonth struct {
