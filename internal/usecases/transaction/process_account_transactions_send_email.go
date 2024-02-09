@@ -31,17 +31,6 @@ func (u *processTransactionsAndSendEmailUsecase) ProcessTransactionsAndSendEmail
 		return errors.New("error processing data for email content creation")
 	}
 
-	/*fmt.Println("Total Balance:", status.TotalBalance)
-	fmt.Println("Average Debit Amount:", status.AvgDebitAmount)
-	fmt.Println("Average Credit Amount:", status.AvgCreditAmount)
-
-	for year, months := range status.TransactionsGrouped.YearMonths {
-		for month, transactions := range months {
-			fmt.Printf("Year: %s, Month: %s, Transaction Count: %d\n", year, month, transactions)
-		}
-	}
-	*/
-
 	u.emailSender.SendEmail(status)
 
 	return nil
@@ -62,7 +51,9 @@ func processDataAndCalculateStatus(transactions []transaction.Transaction) (*tra
 
 	for _, t := range transactions {
 		totalBalance += t.Amount
-
+		if t.Amount == 0 {
+			continue
+		}
 		if t.Amount > 0 {
 			totalCreditTransaction++
 			sumCreditTransaction += t.Amount

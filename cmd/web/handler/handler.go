@@ -46,6 +46,14 @@ func HandleAPIGatewayProxyRequest(ctx context.Context, r events.APIGatewayProxyR
 
 	transactions, err := getTransactionsUsecase.GetTransactions(config.S3Bucket, config.ObjectKey)
 
+	if err != nil {
+		fmt.Println("Could not retrieve transactions:", err)
+		return events.APIGatewayProxyResponse{
+			StatusCode: 500,
+			Body:       "could not retrieve transactions!",
+		}, nil
+	}
+
 	processAndSendEmailUsecase := usecases.NewProcessTransactionsAndSendEmailUsecase(session)
 
 	err = processAndSendEmailUsecase.ProcessTransactionsAndSendEmail(transactions)

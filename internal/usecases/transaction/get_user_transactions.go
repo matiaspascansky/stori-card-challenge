@@ -8,21 +8,21 @@ import (
 	"github.com/aws/aws-sdk-go/aws/session"
 )
 
-type TransactionUsecase interface {
+type GetTransactionUsecase interface {
 	GetTransactions(bucket, key string) ([]transaction.Transaction, error)
 }
 
-type transactionUsecase struct {
+type getTransactionUsecase struct {
 	transactionRepository transactionInfra.TransactionRepository
 }
 
-func NewGetTransactionUsecase(session *session.Session) *transactionUsecase {
-	return &transactionUsecase{
+func NewGetTransactionUsecase(session *session.Session) *getTransactionUsecase {
+	return &getTransactionUsecase{
 		transactionRepository: transactionInfra.NewGetTransactionRepository(session),
 	}
 }
 
-func (u *transactionUsecase) GetTransactions(bucket, key string) ([]transaction.Transaction, error) {
+func (u *getTransactionUsecase) GetTransactions(bucket, key string) ([]transaction.Transaction, error) {
 	// Get CSV content from S3
 	transactions, err := u.transactionRepository.GetTransactionsFromS3(bucket, key)
 
