@@ -28,7 +28,9 @@ docker push 767397698520.dkr.ecr.us-east-1.amazonaws.com/account-images
 6) Create simple SNS Topic called "CreateUserAccountTopic" and in aws.json and replace Arn in aws_json
 
 
-notes: I am using us-east-1 region
+notes: 
+- I am using us-east-1 region
+- The api gateway lambda invocation in account is commented because it was used for a POC and then I added the SNS.
 
 ![Sample Image](resources/aws_architecture.png)
 
