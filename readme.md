@@ -28,7 +28,7 @@ docker push 767397698520.dkr.ecr.us-east-1.amazonaws.com/account-images
 6) Create simple SNS Topic called "CreateUserAccountTopic" and in aws.json and replace Arn in aws_json
 
 
-notes: i am using us-east-1 region
+notes: I am using us-east-1 region
 
 ![Sample Image](resources/aws_architecture.png)
 
