@@ -34,6 +34,7 @@ func (s *snsSender) Execute(msg TopicMessage) error {
 	if err != nil {
 		log.Fatalf("Error marshaling JSON: %v", err)
 	}
+	log.Print("toppic: ", s.topicArn)
 	_, err = svc.Publish(&sns.PublishInput{
 		Message:  aws.String(string(jsonData)),
 		TopicArn: aws.String(s.topicArn),

@@ -2,5 +2,5 @@
     "aws_region": "us-east-1",
     "s3_bucket": "transactions-bucket-stori-card-challenge",
     "object_key": "transactions.csv",
-    "topic_arn": "arn:aws:sns:us-east-1:767397698520:CreateAccount"
+    "topic_arn": "arn:aws:sns:us-east-1:767397698520:CreateUserAccountTopic"
 }
