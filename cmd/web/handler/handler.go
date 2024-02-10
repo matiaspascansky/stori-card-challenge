@@ -40,7 +40,7 @@ func HandleAPIGatewayProxyRequest(ctx context.Context, r events.APIGatewayProxyR
 		Credentials: credentials.NewStaticCredentials(os.Getenv("aws_access_key"), os.Getenv("aws_secret_key"), ""),
 	})
 	if err != nil {
-		fmt.Println("Error creating session:", err)
+		log.Printf("Error creating session: %s", err)
 		return events.APIGatewayProxyResponse{
 			StatusCode: 500,
 			Body:       "broken!",

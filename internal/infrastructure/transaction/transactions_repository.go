@@ -3,7 +3,6 @@ package transaction
 import (
 	"context"
 	"encoding/csv"
-	"errors"
 	"io/ioutil"
 	"stori-card-challenge/domain/transaction"
 	"strconv"
@@ -12,6 +11,7 @@ import (
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/s3"
+	"github.com/pkg/errors"
 )
 
 type TransactionRepository interface {
@@ -53,7 +53,7 @@ func (u *transactionRepository) GetTransactionsFromS3(bucket, key string) ([]tra
 	transactions, err := validateAndProcessCSVRecords(records)
 
 	if err != nil {
-		return nil, errors.New("repository: error processing csv")
+		return nil, errors.Wrap(err, "repository: error processing csv")
 	}
 
 	return transactions, nil

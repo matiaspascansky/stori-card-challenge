@@ -23,7 +23,7 @@ func NewGetTransactionUsecase(session *session.Session) *getTransactionUsecase {
 }
 
 func (u *getTransactionUsecase) GetTransactions(bucket, key string) ([]transaction.Transaction, error) {
-	// Get CSV content from S3
+
 	transactions, err := u.transactionRepository.GetTransactionsFromS3(bucket, key)
 
 	if err != nil {
