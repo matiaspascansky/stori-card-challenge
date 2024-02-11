@@ -5,8 +5,6 @@ import (
 	"stori-card-challenge/domain/transaction"
 	transactionInfra "stori-card-challenge/internal/infrastructure/transaction"
 	"strings"
-
-	"github.com/aws/aws-sdk-go/aws/session"
 )
 
 type ProcessTransactionsAndSendEmailUsecase interface {
@@ -17,9 +15,9 @@ type processTransactionsAndSendEmailUsecase struct {
 	emailSender transactionInfra.EmailSender
 }
 
-func NewProcessTransactionsAndSendEmailUsecase(session *session.Session) *processTransactionsAndSendEmailUsecase {
+func NewProcessTransactionsAndSendEmailUsecase(emailSender transactionInfra.EmailSender) *processTransactionsAndSendEmailUsecase {
 	return &processTransactionsAndSendEmailUsecase{
-		emailSender: transactionInfra.NewGetEmailSender(session),
+		emailSender: emailSender,
 	}
 }
 

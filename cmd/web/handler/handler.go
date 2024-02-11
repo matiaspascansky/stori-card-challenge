@@ -8,6 +8,7 @@ import (
 	"os"
 	"stori-card-challenge/domain/transaction"
 	"stori-card-challenge/internal/infrastructure/topic"
+	transactionInfra "stori-card-challenge/internal/infrastructure/transaction"
 	usecases "stori-card-challenge/internal/usecases/transaction"
 	"stori-card-challenge/utils"
 
@@ -61,7 +62,9 @@ func HandleAPIGatewayProxyRequest(ctx context.Context, r events.APIGatewayProxyR
 		}, nil
 	}
 
-	getTransactionsUsecase := usecases.NewGetTransactionUsecase(session)
+	transactionsRepository := transactionInfra.NewGetTransactionRepository(session)
+
+	getTransactionsUsecase := usecases.NewGetTransactionUsecase(transactionsRepository)
 
 	transactions, err := getTransactionsUsecase.GetTransactions(config.S3Bucket, config.ObjectKey)
 
@@ -73,7 +76,8 @@ func HandleAPIGatewayProxyRequest(ctx context.Context, r events.APIGatewayProxyR
 		}, nil
 	}
 
-	processAndSendEmailUsecase := usecases.NewProcessTransactionsAndSendEmailUsecase(session)
+	emailSender := transactionInfra.NewGetEmailSender(session)
+	processAndSendEmailUsecase := usecases.NewProcessTransactionsAndSendEmailUsecase(emailSender)
 
 	transactionInfo, err := processAndSendEmailUsecase.ProcessTransactionsAndSendEmail(transactions, requestBody.Email)
 

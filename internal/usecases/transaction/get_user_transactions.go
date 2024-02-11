@@ -4,8 +4,6 @@ import (
 	"errors"
 	"stori-card-challenge/domain/transaction"
 	transactionInfra "stori-card-challenge/internal/infrastructure/transaction"
-
-	"github.com/aws/aws-sdk-go/aws/session"
 )
 
 type GetTransactionUsecase interface {
@@ -16,9 +14,9 @@ type getTransactionUsecase struct {
 	transactionRepository transactionInfra.TransactionRepository
 }
 
-func NewGetTransactionUsecase(session *session.Session) *getTransactionUsecase {
+func NewGetTransactionUsecase(transactionRepository transactionInfra.TransactionRepository) *getTransactionUsecase {
 	return &getTransactionUsecase{
-		transactionRepository: transactionInfra.NewGetTransactionRepository(session),
+		transactionRepository: transactionRepository,
 	}
 }
 
