@@ -9,5 +9,4 @@ import (
 func main() {
 	// Register Lambda handlers
 	lambda.Start(handler.HandleAPIGatewayProxyRequest)
-
 }

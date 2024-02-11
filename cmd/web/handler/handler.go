@@ -21,13 +21,19 @@ const (
 	aws_config_path = "/var/task/aws_config.json"
 )
 
+type RequestBody struct {
+	FirstName string `json:"first_name"`
+	LastName  string `json:"last_name"`
+	Email     string `json:"email"`
+}
+
 // HandleAPIGatewayProxyRequest is the Lambda handler function.
 func HandleAPIGatewayProxyRequest(ctx context.Context, r events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 
 	// Read AWS configuration from JSON file
 	config, err := utils.ReadAWSConfig(aws_config_path)
 	if err != nil {
-		fmt.Println("Error reading AWS config:", err)
+		log.Println("Error reading AWS config:", err)
 		return events.APIGatewayProxyResponse{
 			StatusCode: 500,
 			Body:       "broken!",
@@ -43,7 +49,7 @@ func HandleAPIGatewayProxyRequest(ctx context.Context, r events.APIGatewayProxyR
 		log.Printf("Error creating session: %s", err)
 		return events.APIGatewayProxyResponse{
 			StatusCode: 500,
-			Body:       "broken!",
+			Body:       "Could not create aws session!",
 		}, nil
 	}
 
@@ -72,15 +78,7 @@ func HandleAPIGatewayProxyRequest(ctx context.Context, r events.APIGatewayProxyR
 	transactionInfo, err := processAndSendEmailUsecase.ProcessTransactionsAndSendEmail(transactions, requestBody.Email)
 
 	if err != nil {
-		fmt.Println("error processing and sending email:", err)
-		return events.APIGatewayProxyResponse{
-			StatusCode: 500,
-			Body:       "broken!",
-		}, nil
-	}
-
-	if err != nil {
-		fmt.Println("handler: Error in csv usecase", err)
+		log.Println("error processing and sending email:", err)
 		return events.APIGatewayProxyResponse{
 			StatusCode: 500,
 			Body:       "broken!",
@@ -103,12 +101,6 @@ func HandleAPIGatewayProxyRequest(ctx context.Context, r events.APIGatewayProxyR
 		StatusCode: 200,
 		Body:       "Email has been sent to user!",
 	}, nil
-}
-
-type RequestBody struct {
-	FirstName string `json:"first_name"`
-	LastName  string `json:"last_name"`
-	Email     string `json:"email"`
 }
 
 func ToMsgData(r RequestBody, tInfo transaction.TransactionInformation) usecases.MsgData {
