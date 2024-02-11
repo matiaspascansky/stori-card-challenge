@@ -2,6 +2,7 @@ package usecases
 
 import (
 	"context"
+	"errors"
 	"stori-card-challenge/domain/transaction"
 	"stori-card-challenge/internal/infrastructure/transaction/mocks"
 	"testing"
@@ -65,6 +66,26 @@ func (s *GetUserTransactionsTestSuite) Test_GetTransactions() {
 
 		assert.NoError(t, err)
 		assert.Equal(t, mockedTransactions[0].Amount, trans[0].Amount)
+
+	})
+
+	s.TearDownTest()
+	s.SetupTest()
+
+	s.T().Run("error", func(t *testing.T) {
+
+		bucketName := "test"
+		key := "testKey"
+
+		s.transactionsRepo.On("GetTransactionsFromS3", mock.Anything, mock.Anything).Return(nil, errors.New("foo"))
+
+		getTransactionUsecase := NewGetTransactionUsecase(s.transactionsRepo)
+
+		_, err := getTransactionUsecase.GetTransactions(bucketName, key)
+
+		s.transactionsRepo.AssertNumberOfCalls(s.T(), "GetTransactionsFromS3", 1)
+
+		assert.ErrorContains(t, err, "usecase: error getting transactions from s3")
 
 	})
 }
