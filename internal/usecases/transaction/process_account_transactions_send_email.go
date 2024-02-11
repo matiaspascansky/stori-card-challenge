@@ -5,6 +5,8 @@ import (
 	"stori-card-challenge/domain/transaction"
 	transactionInfra "stori-card-challenge/internal/infrastructure/transaction"
 	"strings"
+
+	wrapError "github.com/pkg/errors"
 )
 
 type ProcessTransactionsAndSendEmailUsecase interface {
@@ -25,16 +27,20 @@ func (u *processTransactionsAndSendEmailUsecase) ProcessTransactionsAndSendEmail
 
 	tStatus, err := processDataAndCalculateStatus(transactions)
 
+	if err != nil {
+		return nil, wrapError.Wrap(err, "error processing data for email content creation")
+	}
+
 	tInfo := &transaction.TransactionInformation{
 		TotalBalance: tStatus.TotalBalance,
 		Status:       tStatus.Status,
 	}
 
-	if err != nil {
-		return nil, errors.New("error processing data for email content creation")
-	}
+	err = u.emailSender.SendEmail(tStatus, email)
 
-	u.emailSender.SendEmail(tStatus, email)
+	if err != nil {
+		return nil, errors.New("error sending email to user")
+	}
 
 	return tInfo, err
 
