@@ -7,6 +7,7 @@ import (
 	"stori-card-challenge/domain/transaction"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
@@ -64,7 +65,7 @@ func validateAndProcessCSVRecords(records [][]string) ([]transaction.Transaction
 	var transactions []transaction.Transaction
 
 	for i, record := range records {
-
+		//ignore first row (title)
 		if i == 0 {
 			continue
 		}
@@ -77,7 +78,13 @@ func validateAndProcessCSVRecords(records [][]string) ([]transaction.Transaction
 		if err != nil {
 			return nil, errors.New("invalid ID format")
 		}
-		//falta validar la fecha
+
+		_, err = time.Parse("01/02/2006", record[1])
+
+		if err != nil {
+			return nil, errors.New("invalid Date format")
+
+		}
 		date := record[1]
 
 		amount, err := strconv.ParseFloat(record[2], 64)

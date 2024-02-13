@@ -31,8 +31,9 @@ docker push 767397698520.dkr.ecr.us-east-1.amazonaws.com/account-images
 notes: 
 - I am using us-east-1 region
 - The api gateway lambda invocation in account is commented because it was used for a POC and then I added the SNS.
+- I also added the year to the csv to group not only by months, but by years as well.
 
-![Sample Image](resources/aws_architecture.png)
+
 
 
 
